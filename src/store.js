@@ -4,33 +4,29 @@ const store = new Vuex.Store({
   state: {
     player: {
       name: '',
-      avatarUrl: '',
+      avatarId: 0,
       puuid: '',
       id: '',
       last_match_id: '',
       ranked_info: {
-        tier: '',
-        rank: '',
-        lp: '',
-        wins: '',
-        losses: '',
+        lp: 0,
+        wins: 0,
+        losses: 0
       },
       last_match: {
-        game_duration: '',
-        game_creation: '',
+        game_duration: 0,
+        game_creation: 0,
         game_champion: '',
-        game_kills: '',
-        game_deaths: '',
-        game_assists: '',
-        win: '',
+        game_kills: 0,
+        game_deaths: 0,
+        game_assists: 0,
+        win: false,
         lane: '',
-        minions_killed: '',
+        minions_killed: 0
       }
     }
   },
-  mutations: {
-    
-  },
+  mutations: {},
   actions: {
     increment(context) {
       context.commit('increment')
