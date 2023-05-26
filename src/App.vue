@@ -6,39 +6,39 @@
         <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
       </div>
         <div class="header__add" v-if="isAdmin">
-          <div class="header__add__button">+ Ajouter un compte</div>
-        </div>
-      </div>
-      <div class="main">
-        <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
-          <div class="main__ranks__title" v-if="rank[1].length != 0">
-            <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
-            <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+            <div class="header__add__button">+ Add an account</div>
           </div>
-          <div class="main__ranks__players" v-if="rank[1].length != 0">
-            <div class="main__ranks__players__player" v-for="player in rank[1]">
-              <div class="player__rank">
-                <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
-                <div class="player__rank__details">
-                  <div class="player__rank__details__stats">
-                    <div class="name">{{ player.name }} </div>
-                    <div class="win">{{ player.ranked_info.wins }}W</div>
-                    <span> -</span>
-                    <div class="lose">{{ player.ranked_info.losses }}D </div>
+        </div>
+        <div class="main">
+          <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
+            <div class="main__ranks__title" v-if="rank[1].length != 0">
+              <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
+              <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+            </div>
+            <div class="main__ranks__players" v-if="rank[1].length != 0">
+              <div class="main__ranks__players__player" v-for="player in rank[1]">
+                <div class="player__rank">
+                  <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
+                  <div class="player__rank__details">
+                    <div class="player__rank__details__stats">
+                      <div class="name">{{ player.name }} </div>
+                      <div class="win">{{ player.ranked_info.wins }}W</div>
+                      <span> -</span>
+                      <div class="lose">{{ player.ranked_info.losses }}L </div>
+                    </div>
+                    <div class="player__rank__details__elobar"
+                      :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
+                        player.ranked_info.lp }}LP</div>
                   </div>
-                  <div class="player__rank__details__elobar"
-                    :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
-                      player.ranked_info.lp }}LP</div>
                 </div>
-              </div>
-              <div class="player__lastgame">
-                <div class="player__lastgame__header">
-                  <p class="player__lastgame__header__title">Dernière Ranked :</p>
-                  <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
-                </div>
-                <div class="player__lastgame__score">
-                  <div class="player__lastgame__score__win" v-if="player.last_match.win">Victoire</div>
-                  <div class="player__lastgame__score__lose" v-else>Défaite</div>
+                <div class="player__lastgame">
+                  <div class="player__lastgame__header">
+                    <p class="player__lastgame__header__title">Last Ranked :</p>
+                    <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
+                  </div>
+                  <div class="player__lastgame__score">
+                    <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
+                    <div class="player__lastgame__score__lose" v-else>Defeat</div>
                   <div class="player__lastgame__score__champ">
                     <img class="player__lastgame__score__champ__icon"
                       :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
@@ -74,8 +74,6 @@
 
 <script>
 import dayjs from 'dayjs';
-import 'dayjs/locale/fr'
-dayjs.locale('fr')
 
 export default {
   name: 'App',
@@ -93,7 +91,7 @@ export default {
         "bronze": "#5A3E39",
         "iron": "#554542",
       },
-      players: ["Agent C"]
+      players: ["Agent C", "lmant", "Jack", "Paul", "Faker"]
     }
   },
   mounted() {
@@ -346,6 +344,8 @@ export default {
                 width: 500px;
                 height: 30px;
                 border-radius: 25px;
+
+                border: 2px grey solid;
 
                 display: flex;
                 align-items: center;
