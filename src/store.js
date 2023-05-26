@@ -323,7 +323,7 @@ const store = new Vuex.Store({
             this.state.player.last_match.game_kills = playerStats.kills
             this.state.player.last_match.game_deaths = playerStats.deaths
             this.state.player.last_match.game_assists = playerStats.assists
-            this.state.player.last_match.win = playerStats.win
+            this.state.player.last_match.win = playerStats.gameEndedInEarlySurrender ? "draw" : playerStats.win ? "win" : "loss"
             this.state.player.last_match.role =
               playerStats.individualPosition == 'UTILITY'
                 ? 'SUPPORT'

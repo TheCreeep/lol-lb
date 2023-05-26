@@ -55,7 +55,6 @@
                   </div>
                   <div class="player__rank__details__elobar"
                     :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
-
                       player.ranked_info.tier == 'unranked' ? 'Unranked' :
                       player.ranked_info.lp + 'LP' }}</div>
                 </div>
@@ -66,8 +65,9 @@
                   <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
                 </div>
                 <div class="player__lastgame__score">
-                  <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
-                  <div class="player__lastgame__score__lose" v-else>Defeat</div>
+                  <div class="player__lastgame__score__win" v-if="player.last_match.win == 'win'">Victory</div>
+                  <div class="player__lastgame__score__lose" v-else-if="player.last_match.win == 'loss'">Defeat</div>
+                  <div class="player__lastgame__score__draw" v-else>Draw</div>
                   <div class="player__lastgame__score__champ">
                     <img class="player__lastgame__score__champ__icon"
                       :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
@@ -424,7 +424,7 @@ export default {
 
           .player__rank {
             display: flex;
-            min-width: 700px;
+            min-width: 800px;
             flex-direction: row;
             align-items: center;
             gap: 2em;
@@ -476,6 +476,8 @@ export default {
                     font-weight: 400;
                     color: #FA3737;
                   }
+
+
 
                 }
 
@@ -578,6 +580,12 @@ export default {
                 font-weight: 400;
                 font-size: 30px;
                 color: #FA3737;
+              }
+
+              &__draw {
+                font-size: 30px;
+                font-weight: 400;
+                color: #c8aa6e;
               }
 
               &__champ {
