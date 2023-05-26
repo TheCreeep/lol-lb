@@ -2,63 +2,63 @@
   <div class="page">
     <div class="header">
       <div class="header__logo">
-        <img class="header__logo__icon" src="@/assets/ranks/challenger.png" alt="">
-        <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
-      </div>
-        <div class="header__add" v-if="isAdmin">
-            <div class="header__add__button">+ Add an account</div>
-          </div>
+          <img class="header__logo__icon" src="assets/ranks/challenger.png" alt="">
+          <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
         </div>
-        <div class="main">
-          <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
-            <div class="main__ranks__title" v-if="rank[1].length != 0">
-              <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
-              <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+          <div class="header__add" v-if="isAdmin">
+              <div class="header__add__button">+ Add an account</div>
             </div>
-            <div class="main__ranks__players" v-if="rank[1].length != 0">
-              <div class="main__ranks__players__player" v-for="player in rank[1]">
-                <div class="player__rank">
-                  <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
-                  <div class="player__rank__details">
-                    <div class="player__rank__details__stats">
-                      <div class="name">{{ player.name }} </div>
-                      <div class="win">{{ player.ranked_info.wins }}W</div>
-                      <span> -</span>
-                      <div class="lose">{{ player.ranked_info.losses }}L </div>
-                    </div>
-                    <div class="player__rank__details__elobar"
-                      :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
+          </div>
+          <div class="main">
+            <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
+              <div class="main__ranks__title" v-if="rank[1].length != 0">
+                <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
+                <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+              </div>
+              <div class="main__ranks__players" v-if="rank[1].length != 0">
+                <div class="main__ranks__players__player" v-for="player in rank[1]">
+                  <div class="player__rank">
+                    <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
+                    <div class="player__rank__details">
+                      <div class="player__rank__details__stats">
+                        <div class="name">{{ player.name }} </div>
+                        <div class="win">{{ player.ranked_info.wins }}W</div>
+                        <span> -</span>
+                        <div class="lose">{{ player.ranked_info.losses }}L </div>
+                      </div>
+                      <div class="player__rank__details__elobar"
+                        :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
 
-                        player.ranked_info.tier == 'unranked' ? 'Unranked' :
-                        player.ranked_info.lp + 'LP' }}</div>
+                          player.ranked_info.tier == 'unranked' ? 'Unranked' :
+                          player.ranked_info.lp + 'LP' }}</div>
+                    </div>
                   </div>
-                </div>
-                <div class="player__lastgame">
-                  <div class="player__lastgame__header">
-                    <p class="player__lastgame__header__title">Last Ranked :</p>
-                    <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
-                  </div>
-                  <div class="player__lastgame__score">
-                    <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
-                    <div class="player__lastgame__score__lose" v-else>Defeat</div>
-                  <div class="player__lastgame__score__champ">
-                    <img class="player__lastgame__score__champ__icon"
-                      :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
-                    <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
-                  </div>
-                  <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
-                    player.last_match.game_kills
-                  }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
+                  <div class="player__lastgame">
+                    <div class="player__lastgame__header">
+                      <p class="player__lastgame__header__title">Last Ranked :</p>
+                      <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
+                    </div>
+                    <div class="player__lastgame__score">
+                      <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
+                      <div class="player__lastgame__score__lose" v-else>Defeat</div>
+                    <div class="player__lastgame__score__champ">
+                      <img class="player__lastgame__score__champ__icon"
+                        :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
+                      <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
+                    </div>
+                    <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
+                      player.last_match.game_kills
+                    }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
 }}</span>/<span class="player__lastgame__score__kda__assists">{{ player.last_match.game_assists
 }}</span></div>
-                </div>
-                <div class="player__lastgame__details">
-                  <div class="player__lastgame__details__lane">
-                    <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
-                    <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
                   </div>
-                  <div class="player__lastgame__details__minions">
-                    <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
+                  <div class="player__lastgame__details">
+                    <div class="player__lastgame__details__lane">
+                      <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
+                      <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
+                    </div>
+                    <div class="player__lastgame__details__minions">
+                      <img class="player__lastgame__details__minions__icon" src="assets/lanes/minions.png">
                     <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
                   </div>
                   <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
@@ -114,11 +114,11 @@ export default {
       return `https://cdn.mobalytics.gg/assets/lol/images/dd/champions/icons/${name.toLowerCase()}.png?V3`;
     },
     getRankURL(rank) {
-      const path = new URL(`@/assets/ranks/`, import.meta.url)
+      const path = new URL(`assets/ranks/`, import.meta.url)
       return `${path}/${rank}.png`
     },
     getLaneURL(lane) {
-      const path = new URL(`@/assets/lanes/`, import.meta.url)
+      const path = new URL(`assets/lanes/`, import.meta.url)
       return `${path}/${lane.toLowerCase()}.png`
     },
     dateFormat(timestamp) {
