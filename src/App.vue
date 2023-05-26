@@ -7,7 +7,7 @@
         </div>
             <div class="header__time">
               <div class="header__time__text" v-if="!getTimeLeft()">LE CHALLENGE COMMENCE DANS</div>
-              <div class="header__time__text" v-else>TEMPS RESTANT</div>
+                    <div class="header__time__text" v-else>TEMPS RESTANT (Nombre de joueurs : {{ getNumberOfPlayers() }})</div>
               <div class="header__time__timer">{{ timeLeft }}</div>
             </div>
             <div class="header__add" v-if="isAdmin">
@@ -216,6 +216,16 @@ export default {
     openOpGG(name) {
       window.open(`https://euw.op.gg/summoner/userName=${name}`, '_blank');
     },
+    getNumberOfPlayers() {
+      /* Count the number of all players in all of ranks */
+      return Object.values(this.data).reduce((acc, cur) => {
+        if (Array.isArray(cur)) {
+          return acc + cur.length;
+        } else {
+          return acc + 1;
+        }
+      }, 0);
+    }
   },
   watch: {
 
