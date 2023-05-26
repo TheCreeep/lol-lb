@@ -5,75 +5,74 @@
         <img class="header__logo__icon" src="@/assets/ranks/challenger.png" alt="">
         <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
       </div>
-                      <div class="header__add" v-if="isAdmin">
-                        <div class="header__add__button">+ Ajouter un compte</div>
-                      </div>
-                    </div>
-                    <div class="main">
-                      <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
-                        <div class="main__ranks__title" v-if="rank[1].length != 0">
-                          <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
-                          <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
-                        </div>
-                        <div class="main__ranks__players" v-if="rank[1].length != 0">
-                          <div class="main__ranks__players__player" v-for="player in rank[1]">
-                            <div class="player__rank">
-                              <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
-                              <div class="player__rank__details">
-                                <div class="player__rank__details__stats">
-                                  <div class="name">{{ player.name }} </div>
-                                  <div class="win">{{ player.ranked_info.wins }}W</div>
-                                  <span> -</span>
-                                  <div class="lose">{{ player.ranked_info.losses }}D </div>
-                                </div>
-                                <div class="player__rank__details__elobar"
-                                  :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
-                                    player.ranked_info.lp }}LP</div>
-                              </div>
-                            </div>
-                            <div class="player__lastgame">
-                              <div class="player__lastgame__header">
-                                <p class="player__lastgame__header__title">Dernière Ranked :</p>
-                                <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
-                              </div>
-                              <div class="player__lastgame__score">
-                                <div class="player__lastgame__score__win" v-if="player.last_match.win">Victoire</div>
-                                <div class="player__lastgame__score__lose" v-else>Défaite</div>
-                                <div class="player__lastgame__score__champ">
-                                  <img class="player__lastgame__score__champ__icon"
-                                    :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
-                                  <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
-                                </div>
-                                <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
-                                  player.last_match.game_kills
-                                }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
+        <div class="header__add" v-if="isAdmin">
+          <div class="header__add__button">+ Ajouter un compte</div>
+        </div>
+      </div>
+      <div class="main">
+        <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
+          <div class="main__ranks__title" v-if="rank[1].length != 0">
+            <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
+            <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+          </div>
+          <div class="main__ranks__players" v-if="rank[1].length != 0">
+            <div class="main__ranks__players__player" v-for="player in rank[1]">
+              <div class="player__rank">
+                <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
+                <div class="player__rank__details">
+                  <div class="player__rank__details__stats">
+                    <div class="name">{{ player.name }} </div>
+                    <div class="win">{{ player.ranked_info.wins }}W</div>
+                    <span> -</span>
+                    <div class="lose">{{ player.ranked_info.losses }}D </div>
+                  </div>
+                  <div class="player__rank__details__elobar"
+                    :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
+                      player.ranked_info.lp }}LP</div>
+                </div>
+              </div>
+              <div class="player__lastgame">
+                <div class="player__lastgame__header">
+                  <p class="player__lastgame__header__title">Dernière Ranked :</p>
+                  <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
+                </div>
+                <div class="player__lastgame__score">
+                  <div class="player__lastgame__score__win" v-if="player.last_match.win">Victoire</div>
+                  <div class="player__lastgame__score__lose" v-else>Défaite</div>
+                  <div class="player__lastgame__score__champ">
+                    <img class="player__lastgame__score__champ__icon"
+                      :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
+                    <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
+                  </div>
+                  <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
+                    player.last_match.game_kills
+                  }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
 }}</span>/<span class="player__lastgame__score__kda__assists">{{ player.last_match.game_assists
 }}</span></div>
-                              </div>
-                              <div class="player__lastgame__details">
-                                <div class="player__lastgame__details__lane">
-                                  <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.lane)">
-                                  <p class="player__lastgame__details__lane__text">{{ player.last_match.lane.toLowerCase() }}</p>
-                                </div>
-                                <div class="player__lastgame__details__minions">
-                                  <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
-                                  <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
-                                </div>
-                                <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="credits">Made by <a href="https://github.com/TheCreeep">Creep</a> - 2023</div>
+                </div>
+                <div class="player__lastgame__details">
+                  <div class="player__lastgame__details__lane">
+                    <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
+                    <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
+                  </div>
+                  <div class="player__lastgame__details__minions">
+                    <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
+                    <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
+                  </div>
+                  <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="credits">Made by <a href="https://github.com/TheCreeep">Creep</a> - 2023</div>
     </div>
 </template>
 
 
 <script>
-import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr'
 dayjs.locale('fr')
@@ -94,133 +93,18 @@ export default {
         "bronze": "#5A3E39",
         "iron": "#554542",
       },
-      data: {
-        "Challenger": [{
-          name: 'Faker',
-          avatarId: 1297,
-          puuid: 'erN98l3vPtPsAdxii2vhl95eEkr1UAR19Z_j9HNocSUstxI15Sy1xfPR77axIBj8FZwO7JAOZ2Gn7w',
-          id: 'Ni9BYoESEkrh77_525PL67K4CoRdrhi_zJ1Gml2Fp3f6u3fm-XPjHfM76A',
-          last_match_id: '',
-          ranked_info: {
-            tier: 'challenger',
-            lp: 15000,
-            wins: 150,
-            losses: 42,
-          },
-          last_match: {
-            game_duration: 2355,
-            game_creation: 1684461977532,
-            game_champion: 'Yasuo',
-            game_kills: 15,
-            game_deaths: 0,
-            game_assists: 5,
-            win: true,
-            lane: 'MIDDLE',
-            minions_killed: 512,
-          }
-        }],
-        "Grandmaster": [],
-        "Master": [],
-        "Diamond I": [],
-        "Diamond II": [],
-        "Diamond III": [],
-        "Diamond IV": [],
-        "Platinum I": [],
-        "Platinum II": [],
-        "Platinum III": [],
-        "Platinum IV": [
-          {
-            name: 'Faker But Platinum',
-            avatarId: 1545,
-            puuid: 'erN98l3vPtPsAdxii2vhl95eEkr1UAR19Z_j9HNocSUstxI15Sy1xfPR77axIBj8FZwO7JAOZ2Gn7w',
-            id: 'Ni9BYoESEkrh77_525PL67K4CoRdrhi_zJ1Gml2Fp3f6u3fm-XPjHfM76A',
-            last_match_id: '',
-            ranked_info: {
-              tier: 'platinum',
-              lp: 52,
-              wins: 15,
-              losses: 42,
-            },
-            last_match: {
-              game_duration: 1525,
-              game_creation: 1684461977532,
-              game_champion: 'Heimerdinger',
-              game_kills: 28,
-              game_deaths: 45,
-              game_assists: 8,
-              win: false,
-              lane: 'SUPPORT',
-              minions_killed: 512,
-            }
-          }
-        ],
-        "Gold I": [],
-        "Gold II": [],
-        "Gold III": [],
-        "Gold IV": [{
-          name: 'Faker But Platinum',
-          avatarId: 1545,
-          puuid: 'erN98l3vPtPsAdxii2vhl95eEkr1UAR19Z_j9HNocSUstxI15Sy1xfPR77axIBj8FZwO7JAOZ2Gn7w',
-          id: 'Ni9BYoESEkrh77_525PL67K4CoRdrhi_zJ1Gml2Fp3f6u3fm-XPjHfM76A',
-          last_match_id: '',
-          ranked_info: {
-            tier: 'platinum',
-            lp: 52,
-            wins: 15,
-            losses: 42,
-          },
-          last_match: {
-            game_duration: 1525,
-            game_creation: 1684461977532,
-            game_champion: 'Heimerdinger',
-            game_kills: 28,
-            game_deaths: 45,
-            game_assists: 8,
-            win: false,
-            lane: 'SUPPORT',
-            minions_killed: 512,
-          }
-        }],
-        "Silver I": [],
-        "Silver II": [],
-        "Silver III": [],
-        "Silver IV": [],
-        "Bronze I": [],
-        "Bronze II": [],
-        "Bronze III": [],
-        "Bronze IV": [],
-        "Iron I": [],
-        "Iron II": [],
-        "Iron III": [],
-        "Iron IV": [],
-      },
+      players: ["Agent C", "EinfachSebb", "SNUSGabe",]
     }
   },
   mounted() {
+    this.getAllPlayersInfo()
   },
   methods: {
-    async getLastMatchId(uuid) {
-      await axios
-        .get(
-          `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${uuid}/ids?type=ranked&count=1&api_key=${this.RGAPIKEY}`
-        )
-        .then((res) => {
-          return res.data[0]
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-
-    async getPlayerInfo(name) {
-      const player = {}
-      await axios.get(`https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}?api_key=${this.RGAPIKEY}`)
-        .then(async (res) => {
-          /* return player; */
-        })
-        .catch(err => {
-          console.log(err);
-        })
+    async getAllPlayersInfo() {
+      this.$store.dispatch('getAllPlayersInfo', {
+        'players': this.players,
+        'key': import.meta.env.VITE_RG_API_KEY
+      })
     },
     getAvatarURL(id) {
       return `https://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${id}.png`;
@@ -262,6 +146,18 @@ export default {
       return localStorage.getItem('token') === '1524';
     },
 
+    data() {
+      /* Sort by LP inside all the tier */
+      const data = this.$store.state.data;
+      Object.entries(data).forEach(([_, v]) => {
+        if (Array.isArray(v) && v.length != 0) {
+          v.sort((a, b) => b.ranked_info.lp - a.ranked_info.lp)
+        }
+      });
+
+      return data;
+    }
+
   }
 }
 </script> 
@@ -274,6 +170,23 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: Inter;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background: red;
+  margin-right: 10px;
+
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(90, 90, 90);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .page {
@@ -289,7 +202,7 @@ export default {
     background: #00000099;
     padding: 10px;
     border-radius: 1em;
-    
+
     a {
       color: #fff;
     }
@@ -376,7 +289,7 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.3em;
+        gap: 1.2em;
 
         &__player {
           display: flex;
