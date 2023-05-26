@@ -143,7 +143,7 @@ export default {
       return Object.entries(this.data).filter(([_, v]) => Array.isArray(v) ? v.length : v);
     },
     isAdmin() {
-      return localStorage.getItem('token') === '1524';
+      return localStorage.getItem('token') === import.meta.env.VITE_ADMIN_TOKEN;
     },
 
     data() {
