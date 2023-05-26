@@ -19,54 +19,66 @@
           </div>
           <div class="main__ranks__players" v-if="rank[1].length != 0">
             <div class="main__ranks__players__player" v-for="player in rank[1]">
-              <div class="player__rank">
-                <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
-                <div class="player__rank__details">
-                  <div class="player__rank__details__stats">
-                    <div class="name">{{ player.name }} </div>
-                    <div class="win">{{ player.ranked_info.wins }}W</div>
-                    <span> -</span>
-                    <div class="lose">{{ player.ranked_info.losses }}L </div>
-                  </div>
-                  <div class="player__rank__details__elobar"
-                    :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
+                <div v-if="isAdmin" class="player__delete" @click="deletePlayerFromDB(player.name)"><svg
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#F85252"
+                    height="800px" width="800px" version="1.1" id="Capa_1" viewBox="0 0 460.775 460.775" xml:space="preserve">
+                    <path
+                      d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z" />
+                  </svg></div>
+                <div class="player__rank">
+                  <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
+                  <div class="player__rank__details">
+                    <div class="player__rank__details__stats">
+                      <div class="name">{{ player.name }} </div>
+                      <div class="win">{{ player.ranked_info.wins }}W</div>
+                      <span> -</span>
+                      <div class="lose">{{ player.ranked_info.losses }}L </div>
+                    </div>
+                    <div class="player__rank__details__elobar"
+                      :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
 
-                      player.ranked_info.tier == 'unranked' ? 'Unranked' :
-                      player.ranked_info.lp + 'LP' }}</div>
-                </div>
-              </div>
-              <div class="player__lastgame">
-                <div class="player__lastgame__header">
-                  <p class="player__lastgame__header__title">Last Ranked :</p>
-                  <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
-                </div>
-                <div class="player__lastgame__score">
-                  <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
-                  <div class="player__lastgame__score__lose" v-else>Defeat</div>
-                  <div class="player__lastgame__score__champ">
-                    <img class="player__lastgame__score__champ__icon"
-                      :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
-                    <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
+                        player.ranked_info.tier == 'unranked' ? 'Unranked' :
+                        player.ranked_info.lp + 'LP' }}</div>
                   </div>
-                  <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
-                    player.last_match.game_kills
-                  }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
+                </div>
+                <div class="player__lastgame" v-if="player.last_match.game_duration != 0">
+                  <div class="player__lastgame__header">
+                    <p class="player__lastgame__header__title">Last Ranked :</p>
+                    <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
+                  </div>
+                  <div class="player__lastgame__score">
+                    <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
+                    <div class="player__lastgame__score__lose" v-else>Defeat</div>
+                    <div class="player__lastgame__score__champ">
+                      <img class="player__lastgame__score__champ__icon"
+                        :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
+                      <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
+                    </div>
+                    <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
+                      player.last_match.game_kills
+                    }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
 }}</span>/<span class="player__lastgame__score__kda__assists">{{ player.last_match.game_assists
 }}</span></div>
+                  </div>
+                  <div class="player__lastgame__details">
+                    <div class="player__lastgame__details__lane">
+                      <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
+                      <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
+                    </div>
+                    <div class="player__lastgame__details__minions">
+                      <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
+                      <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
+                    </div>
+                    <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
+                    </div>
+                  </div>
                 </div>
-                <div class="player__lastgame__details">
-                  <div class="player__lastgame__details__lane">
-                    <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
-                    <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
-                  </div>
-                  <div class="player__lastgame__details__minions">
-                    <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
-                    <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
-                  </div>
-                  <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
+                <div class="player__lastgame" v-else>
+                  <div class="player__lastgame__header">
+                    <p class="player__lastgame__header__title">Last Ranked :</p>
+                    <p class="player__lastgame__header__date">No ranked games</p>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
         </div>
@@ -103,6 +115,9 @@ export default {
     this.getAllPlayersInfo()
   },
   methods: {
+    async deletePlayerFromDB(name) {
+      this.$store.dispatch('deletePlayerFromDB', { name: name, key: this.RGAPIKEY })
+    },
     async addPlayerToDB() {
       this.$store.dispatch('addPlayerToDB', { name: this.nameToAdd, key: this.RGAPIKEY })
     },
@@ -317,6 +332,15 @@ export default {
           justify-content: center;
           gap: 2em;
 
+          .player__delete {
+            cursor: pointer;
+
+            svg {
+              width: 50px;
+              height: 50px;
+            }
+          }
+
           .player__rank {
             display: flex;
             flex-direction: row;
@@ -391,6 +415,7 @@ export default {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            min-width: 450px;
             gap: 0.6em;
 
 

@@ -65,6 +65,33 @@ const store = new Vuex.Store({
   },
   mutations: {},
   actions: {
+    async deletePlayerFromDB({ dispatch }, data) {
+      const { name , key} = data
+
+      const namesCol = collection(db, 'players')
+      const namesSnapshot = await getDocs(namesCol)
+      const namesList = namesSnapshot.docs.map((doc) => doc.data())
+
+      const players = namesList[0].names
+
+      const index = players.indexOf(name)
+
+      if (index > -1) {
+        players.splice(index, 1)
+      }
+
+      await setDoc(doc(db, 'players', 'names'), {
+        names: players
+      })
+
+      toast.success('Player ' + name + ' deleted from the Leaderboard!', {
+        position: 'bottom-right',
+        theme: 'dark'
+      })
+
+      await dispatch('getNames', { key: key })
+    },
+
     async addPlayerToDB({ dispatch }, data) {
       const { name, key: RGAPIKEY } = data
 
@@ -134,6 +161,37 @@ const store = new Vuex.Store({
     async getNames({ dispatch }, data) {
       const { key } = data
 
+      this.state.allPlayersNames = []
+      this.state.data = {
+        Challenger: [],
+        Grandmaster: [],
+        Master: [],
+        'Diamond I': [],
+        'Diamond II': [],
+        'Diamond III': [],
+        'Diamond IV': [],
+        'Platinum I': [],
+        'Platinum II': [],
+        'Platinum III': [],
+        'Platinum IV': [],
+        'Gold I': [],
+        'Gold II': [],
+        'Gold III': [],
+        'Gold IV': [],
+        'Silver I': [],
+        'Silver II': [],
+        'Silver III': [],
+        'Silver IV': [],
+        'Bronze I': [],
+        'Bronze II': [],
+        'Bronze III': [],
+        'Bronze IV': [],
+        'Iron I': [],
+        'Iron II': [],
+        'Iron III': [],
+        'Iron IV': [],
+        Unranked: []
+      }
       const namesCol = collection(db, 'players')
       const namesSnapshot = await getDocs(namesCol)
       const namesList = namesSnapshot.docs.map((doc) => doc.data())
