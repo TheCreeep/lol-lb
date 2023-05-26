@@ -13,9 +13,11 @@
     "axios": "^1.4.0",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
+    "firebase": "^9.22.1",
     "node-sass": "^9.0.0",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0",
+    "vue3-toastify": "^0.1.11",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

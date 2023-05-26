@@ -2,63 +2,65 @@
   <div class="page">
     <div class="header">
       <div class="header__logo">
-            <img class="header__logo__icon" src="@/assets/ranks/challenger.png" alt="">
-            <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
-          </div>
-          <div class="header__add" v-if="isAdmin">
-            <div class="header__add__button">+ Add an account</div>
-          </div>
+          <img class="header__logo__icon" src="@/assets/ranks/challenger.png" alt="">
+          <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
         </div>
-        <div class="main">
-          <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
-            <div class="main__ranks__title" v-if="rank[1].length != 0">
-              <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
-              <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
-            </div>
-            <div class="main__ranks__players" v-if="rank[1].length != 0">
-              <div class="main__ranks__players__player" v-for="player in rank[1]">
-                <div class="player__rank">
-                  <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
-                  <div class="player__rank__details">
-                    <div class="player__rank__details__stats">
-                      <div class="name">{{ player.name }} </div>
-                      <div class="win">{{ player.ranked_info.wins }}W</div>
-                      <span> -</span>
-                      <div class="lose">{{ player.ranked_info.losses }}L </div>
-                    </div>
-                    <div class="player__rank__details__elobar"
-                      :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
+        <div class="header__add" v-if="isAdmin">
+          <input class="header__add__input" @keyup.enter="addPlayerToDB()" type="text" placeholder="Summoner name"
+            v-model="nameToAdd">
+          <div class="header__add__button" @click="addPlayerToDB()">Add</div>
+        </div>
+      </div>
+      <div class="main">
+        <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
+          <div class="main__ranks__title" v-if="rank[1].length != 0">
+            <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
+            <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+          </div>
+          <div class="main__ranks__players" v-if="rank[1].length != 0">
+            <div class="main__ranks__players__player" v-for="player in rank[1]">
+              <div class="player__rank">
+                <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
+                <div class="player__rank__details">
+                  <div class="player__rank__details__stats">
+                    <div class="name">{{ player.name }} </div>
+                    <div class="win">{{ player.ranked_info.wins }}W</div>
+                    <span> -</span>
+                    <div class="lose">{{ player.ranked_info.losses }}L </div>
+                  </div>
+                  <div class="player__rank__details__elobar"
+                    :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
 
-                        player.ranked_info.tier == 'unranked' ? 'Unranked' :
-                        player.ranked_info.lp + 'LP' }}</div>
-                  </div>
+                      player.ranked_info.tier == 'unranked' ? 'Unranked' :
+                      player.ranked_info.lp + 'LP' }}</div>
                 </div>
-                <div class="player__lastgame">
-                  <div class="player__lastgame__header">
-                    <p class="player__lastgame__header__title">Last Ranked :</p>
-                    <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
+              </div>
+              <div class="player__lastgame">
+                <div class="player__lastgame__header">
+                  <p class="player__lastgame__header__title">Last Ranked :</p>
+                  <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
+                </div>
+                <div class="player__lastgame__score">
+                  <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
+                  <div class="player__lastgame__score__lose" v-else>Defeat</div>
+                  <div class="player__lastgame__score__champ">
+                    <img class="player__lastgame__score__champ__icon"
+                      :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
+                    <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
                   </div>
-                  <div class="player__lastgame__score">
-                    <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
-                    <div class="player__lastgame__score__lose" v-else>Defeat</div>
-                    <div class="player__lastgame__score__champ">
-                      <img class="player__lastgame__score__champ__icon"
-                        :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
-                      <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
-                    </div>
-                    <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
-                      player.last_match.game_kills
-                    }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
+                  <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
+                    player.last_match.game_kills
+                  }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
 }}</span>/<span class="player__lastgame__score__kda__assists">{{ player.last_match.game_assists
 }}</span></div>
+                </div>
+                <div class="player__lastgame__details">
+                  <div class="player__lastgame__details__lane">
+                    <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
+                    <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
                   </div>
-                  <div class="player__lastgame__details">
-                    <div class="player__lastgame__details__lane">
-                      <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
-                      <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
-                    </div>
-                    <div class="player__lastgame__details__minions">
-                      <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
+                  <div class="player__lastgame__details__minions">
+                    <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
                     <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
                   </div>
                   <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
@@ -94,19 +96,25 @@ export default {
         "iron": "#554542",
         "unranked": "#010a13"
       },
-      players: ["Agent C", "Irode", "FUR Ayu", "SLR Twendddy", "Qnoxs", "ScaIey soloq",]
+      nameToAdd: ''
     }
   },
   mounted() {
     this.getAllPlayersInfo()
   },
   methods: {
+    async addPlayerToDB() {
+      this.$store.dispatch('addPlayerToDB', { name: this.nameToAdd, key: this.RGAPIKEY })
+    },
     async getAllPlayersInfo() {
-      this.$store.dispatch('getAllPlayersInfo', {
-        'players': this.players,
+      this.$store.dispatch('getNames', {
         'key': import.meta.env.VITE_RG_API_KEY
       })
     },
+    async addName(name) {
+      this.$store.dispatch('addName', name)
+    }
+    ,
     getAvatarURL(id) {
       return `https://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${id}.png`;
     },
@@ -234,14 +242,26 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding: 6px 10px;
+      padding: 10px 15px;
       background: #1A1717;
       border: 1px solid #DCB867;
       border-radius: 42px;
 
+      gap: 1em;
+
+      &__input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        font-size: 15px;
+        width: 200px;
+      }
+
       &__button {
         text-align: center;
-        font-size: 30px;
+        font-size: 15px;
+        cursor: pointer;
         color: #FFFFFF;
 
         @media screen and (max-width: 768px) {

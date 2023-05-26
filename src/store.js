@@ -1,9 +1,13 @@
 import Vuex from 'vuex'
 import axios from 'axios'
-import { capitalize } from 'vue'
+import { setDoc, doc, getFirestore, collection, getDocs } from 'firebase/firestore/lite'
+import { toast } from 'vue3-toastify'
+
+const db = getFirestore()
 
 const store = new Vuex.Store({
   state: {
+    allPlayersNames: [],
     player_loading: false,
     data: {
       Challenger: [],
@@ -33,7 +37,7 @@ const store = new Vuex.Store({
       'Iron II': [],
       'Iron III': [],
       'Iron IV': [],
-      'Unranked': []
+      Unranked: []
     },
     player: {
       name: '',
@@ -59,18 +63,101 @@ const store = new Vuex.Store({
       }
     }
   },
-  mutations: {
-    /*  */
-  },
+  mutations: {},
   actions: {
-    /* Store player name to firebase database */
-    
-    async addPlayerToData({ dispatch }) {
-      this.state.data[this.state.player.ranked_info.rank].push(this.state.player)
-    },
+    async addPlayerToDB({ dispatch }, data) {
+      const { name, key: RGAPIKEY } = data
 
+      await axios
+        .get(
+          `https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}?api_key=${RGAPIKEY}`
+        )
+        .then(async (res) => {
+          const namesCol = collection(db, 'players')
+          const namesSnapshot = await getDocs(namesCol)
+          const namesList = namesSnapshot.docs.map((doc) => doc.data())
+
+          const players = namesList[0].names
+
+          if (players.includes(res.data.name)) {
+            toast.error('Player ' + name + ' already exists!', {
+              position: 'bottom-right',
+              theme: 'dark'
+            })
+            return false
+          }
+
+          players.push(res.data.name)
+
+          await setDoc(doc(db, 'players', 'names'), {
+            names: players
+          })
+
+          toast.success('Player ' + name + ' added to the Leaderboard!', {
+            position: 'bottom-right',
+            theme: 'dark'
+          })
+
+          dispatch('addSinglePlayer', { name: res.data.name, key: RGAPIKEY })
+        })
+        .catch((err) => {
+          toast.error('Player ' + name + ' not found!', {
+            position: 'bottom-right',
+            theme: 'dark'
+          })
+          console.log(err)
+        })
+    },
+    async addPlayerToDb(_, data) {
+      const { name, key: RGAPIKEY } = data
+
+      await axios
+        .get(
+          `https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}?api_key=${RGAPIKEY}`
+        )
+        .then(async (res) => {
+          const namesCol = collection(db, 'players')
+          const namesSnapshot = await getDocs(namesCol)
+          const namesList = namesSnapshot.docs.map((doc) => doc.data())
+
+          const players = namesList[0].names
+
+          if (!players.includes(res.data.name)) {
+            players.push(res.data.name)
+          }
+
+          await db.collection('players').doc('names').set({
+            names: players
+          })
+        })
+    },
+    async getNames({ dispatch }, data) {
+      const { key } = data
+
+      const namesCol = collection(db, 'players')
+      const namesSnapshot = await getDocs(namesCol)
+      const namesList = namesSnapshot.docs.map((doc) => doc.data())
+
+      const players = namesList[0].names
+
+      await dispatch('getAllPlayersInfo', {
+        players: players,
+        key: key
+      })
+    },
+    async addSinglePlayer({ dispatch }, data) {
+      const { name, key: RGAPIKEY } = data
+      if (!this.state.player_loading) {
+        this.state.player = {}
+        this.state.player_loading = true
+        await dispatch('getPlayerInfo', { name: name, key: RGAPIKEY })
+        await dispatch('addPlayerToData')
+        this.state.player_loading = false
+      }
+    },
     async getAllPlayersInfo({ dispatch }, data) {
       const { players, key: RGAPIKEY } = data
+
       for (const player of players) {
         if (!this.state.player_loading) {
           this.state.player = {}
@@ -80,6 +167,9 @@ const store = new Vuex.Store({
           this.state.player_loading = false
         }
       }
+    },
+    async addPlayerToData({ dispatch }) {
+      this.state.data[this.state.player.ranked_info.rank].push(this.state.player)
     },
     async getPlayerInfo({ dispatch }, data) {
       const { name, key: RGAPIKEY } = data
@@ -119,7 +209,7 @@ const store = new Vuex.Store({
           if (res.data.length === 0) {
             this.state.player.ranked_info.rank = 'Unranked'
             this.state.player.ranked_info.tier = 'unranked'
-            return
+            return false
           }
           const data = res.data[0]
           this.state.player.ranked_info.lp = data.leaguePoints
@@ -136,7 +226,7 @@ const store = new Vuex.Store({
             this.state.player.ranked_info.rank = capitalize(data.tier)
           } else {
             this.state.player.ranked_info.rank = capitalize(data.tier) + ' ' + data.rank
-          } 
+          }
 
           this.state.player.ranked_info.tier = data.tier.toLowerCase()
         })
@@ -151,37 +241,60 @@ const store = new Vuex.Store({
           `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${uuid}/ids?type=ranked&count=1&api_key=${RGAPIKEY}`
         )
         .then(async (res) => {
-          await dispatch('getMatchDetails', { uuid, matchId: res.data[0], key: RGAPIKEY })
+          await dispatch('getMatchDetails', {
+            hasMatch: res.data.length !== 0,
+            uuid,
+            matchId: res.data[0],
+            key: RGAPIKEY
+          })
         })
         .catch((err) => {
           console.log(err)
         })
     },
     async getMatchDetails(_, data) {
-      const { uuid, matchId, key: RGAPIKEY } = data
-      await axios
-        .get(`https://europe.api.riotgames.com/lol/match/v5/matches/${matchId}?api_key=${RGAPIKEY}`)
-        .then((res) => {
-          const playerIndex = res.data.metadata.participants.findIndex((player) => {
-            return player === uuid
+      const { hasMatch, uuid, matchId, key: RGAPIKEY } = data
+
+      if (!hasMatch) {
+        this.state.player.last_match.game_duration = 0
+        this.state.player.last_match.game_creation = 0
+        this.state.player.last_match.game_champion = 'Unknown'
+        this.state.player.last_match.game_kills = 0
+        this.state.player.last_match.game_deaths = 0
+        this.state.player.last_match.game_assists = 0
+        this.state.player.last_match.win = false
+        this.state.player.last_match.role = 'Unknown'
+        this.state.player.last_match.lane = 'Unknown'
+        this.state.player.last_match.minions_killed = 0
+      } else {
+        await axios
+          .get(
+            `https://europe.api.riotgames.com/lol/match/v5/matches/${matchId}?api_key=${RGAPIKEY}`
+          )
+          .then((res) => {
+            const playerIndex = res.data.metadata.participants.findIndex((player) => {
+              return player === uuid
+            })
+
+            const playerStats = res.data.info.participants[playerIndex]
+
+            this.state.player.last_match.game_duration = res.data.info.gameDuration
+            this.state.player.last_match.game_creation = res.data.info.gameCreation
+            this.state.player.last_match.game_champion = playerStats.championName
+            this.state.player.last_match.game_kills = playerStats.kills
+            this.state.player.last_match.game_deaths = playerStats.deaths
+            this.state.player.last_match.game_assists = playerStats.assists
+            this.state.player.last_match.win = playerStats.win
+            this.state.player.last_match.role =
+              playerStats.individualPosition == 'UTILITY'
+                ? 'SUPPORT'
+                : playerStats.individualPosition
+            this.state.player.last_match.minions_killed = playerStats.totalMinionsKilled
           })
-
-          const playerStats = res.data.info.participants[playerIndex]
-
-          this.state.player.last_match.game_duration = res.data.info.gameDuration
-          this.state.player.last_match.game_creation = res.data.info.gameCreation
-          this.state.player.last_match.game_champion = playerStats.championName
-          this.state.player.last_match.game_kills = playerStats.kills
-          this.state.player.last_match.game_deaths = playerStats.deaths
-          this.state.player.last_match.game_assists = playerStats.assists
-          this.state.player.last_match.win = playerStats.win
-          this.state.player.last_match.role =
-            playerStats.individualPosition == 'UTILITY' ? 'SUPPORT' : playerStats.individualPosition
-          this.state.player.last_match.minions_killed = playerStats.totalMinionsKilled
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+          .catch((err) => {
+            console.log(err)
+          })
+      }
     }
   }
 })
