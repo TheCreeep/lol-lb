@@ -1,35 +1,8 @@
-# lol-lb
+# LoL-LeaderBoard
 
-This template should help get you started developing with Vue 3 in Vite.
+### Leaderboard for your league friends, just get a Firebase Key and a Riot dev Key, setup an Admin Password (To add Accounts), grab that .env and put them all in.
+### Put that on netlify and you're good to go
 
-## Recommended IDE Setup
+#### (I did that in a day if there any problem just make an issue)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+![App Screenshot](https://github.com/TheCreeep/lol-lb/assets/87194310/687537d3-f74a-4a45-8d95-d0060f7a9dbc)
