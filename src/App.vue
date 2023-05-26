@@ -28,7 +28,9 @@
                     </div>
                     <div class="player__rank__details__elobar"
                       :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
-                        player.ranked_info.lp }}LP</div>
+
+                        player.ranked_info.tier == 'unranked' ? 'Unranked' :
+                        player.ranked_info.lp + 'LP' }}</div>
                   </div>
                 </div>
                 <div class="player__lastgame">
@@ -90,8 +92,9 @@ export default {
         "silver": "#67757D",
         "bronze": "#5A3E39",
         "iron": "#554542",
+        "unranked": "#010a13"
       },
-      players: ["Agent C", "lmant", "Jack", "Paul", "Faker"]
+      players: ["Agent C", "Irode", "FUR Ayu", "SLR Twendddy", "Qnoxs", "ScaIey soloq",]
     }
   },
   mounted() {
@@ -125,6 +128,10 @@ export default {
       return `${Math.floor(seconds / 60)}:${seconds % 60}`
     },
     createBackgroundString(tier, lp) {
+      if (tier === 'unranked') {
+        return "#010a13";
+      }
+
       const lpPercent = tier === 'challenger' || tier === 'grandmaster' || tier === 'master' ? 100 : lp;
       const color1 = this.rankColor[tier];
 

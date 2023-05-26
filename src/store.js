@@ -116,6 +116,11 @@ const store = new Vuex.Store({
           `https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}?api_key=${RGAPIKEY}`
         )
         .then((res) => {
+          if (res.data.length === 0) {
+            this.state.player.ranked_info.rank = 'Unranked'
+            this.state.player.ranked_info.tier = 'unranked'
+            return
+          }
           const data = res.data[0]
           this.state.player.ranked_info.lp = data.leaguePoints
           this.state.player.ranked_info.wins = data.wins
@@ -131,7 +136,7 @@ const store = new Vuex.Store({
             this.state.player.ranked_info.rank = capitalize(data.tier)
           } else {
             this.state.player.ranked_info.rank = capitalize(data.tier) + ' ' + data.rank
-          }
+          } 
 
           this.state.player.ranked_info.tier = data.tier.toLowerCase()
         })
