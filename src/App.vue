@@ -5,20 +5,25 @@
           <img class="header__logo__icon" src="@/assets/ranks/challenger.png" alt="">
           <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
         </div>
-        <div class="header__add" v-if="isAdmin">
-          <input class="header__add__input" @keyup.enter="addPlayerToDB()" type="text" placeholder="Summoner name"
-            v-model="nameToAdd">
-          <div class="header__add__button" @click="addPlayerToDB()">Add</div>
-        </div>
-      </div>
-      <div class="main">
-        <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
-          <div class="main__ranks__title" v-if="rank[1].length != 0">
-            <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
-            <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
-          </div>
-          <div class="main__ranks__players" v-if="rank[1].length != 0">
-            <div class="main__ranks__players__player" v-for="player in rank[1]">
+                            <div class="header__time">
+                              <div class="header__time__text" v-if="!getTimeLeft()">LE CHALLENGE COMMENCE DANS</div>
+                              <div class="header__time__text" v-else>TEMPS RESTANT</div>
+                              <div class="header__time__timer">{{ timeLeft }}</div>
+                            </div>
+                            <div class="header__add" v-if="isAdmin">
+                              <input class="header__add__input" @keyup.enter="addPlayerToDB()" type="text" placeholder="Summoner name"
+                                v-model="nameToAdd">
+                              <div class="header__add__button" @click="addPlayerToDB()">Add</div>
+                            </div>
+                          </div>
+                          <div class="main">
+                            <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
+                              <div class="main__ranks__title" v-if="rank[1].length != 0">
+                                <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
+                                <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+                              </div>
+                              <div class="main__ranks__players" v-if="rank[1].length != 0">
+                                <div class="main__ranks__players__player" v-for="player in rank[1]">
                 <div v-if="isAdmin" class="player__delete" @click="deletePlayerFromDB(player.name)"><svg
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#F85252"
                     height="800px" width="800px" version="1.1" id="Capa_1" viewBox="0 0 460.775 460.775" xml:space="preserve">
@@ -90,6 +95,8 @@
 
 <script>
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
 
 export default {
   name: 'App',
@@ -108,10 +115,12 @@ export default {
         "iron": "#554542",
         "unranked": "#010a13"
       },
-      nameToAdd: ''
+      nameToAdd: '',
+      timeLeft: 0,
     }
   },
   mounted() {
+    this.startTimer()
     this.getAllPlayersInfo()
   },
   methods: {
@@ -162,7 +171,31 @@ export default {
       const color2 = this.rankColor[rankColorKeys[rankColorIndex + 1]];
 
       return `linear-gradient(90deg, ${color1} ${lpPercent}%, ${color2} ${lpPercent * 1.1}%)`;
+    },
+    startTimer() {
+      setInterval(() => this.getTimeLeft(), 1000);
+    },
+    getTimeLeft() {
+      const now = dayjs();
+      const end = dayjs('2023-06-25 18:00:00');
+      const diff = end.diff(now, 'second');
+
+      const duree = dayjs.duration(diff, 'seconds');
+
+      const monthLeft = duree.months();
+      const dayLeft = duree.days();
+      const hourLeft = duree.hours();
+      const minuteLeft = duree.minutes();
+      const secondLeft = duree.seconds()
+
+
+
+      this.timeLeft = `${dayLeft} Jours ${hourLeft} heures ${minuteLeft} minutes ${secondLeft} secondes`;
+      return !monthLeft
     }
+  },
+  watch: {
+
   },
   computed: {
     filteredRanks() {
@@ -249,6 +282,24 @@ export default {
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        font-size: 30px;
+      }
+    }
+
+    &__time {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2em;
+      
+      &__text {
+        font-size: 30px;
+        color: #fff;
+      }
+
+      &__timer {
+        color: #fff;
         font-size: 30px;
       }
     }
