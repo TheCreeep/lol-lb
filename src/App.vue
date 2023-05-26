@@ -88,7 +88,7 @@
           </div>
         </div>
       </div>
-      <div class="credits">Made by <a href="https://github.com/TheCreeep">Creep</a> - 2023</div>
+        <div class="credits">Made by <a href="https://github.com/TheCreeep" target="_blank">Creep</a> - 2023</div>
     </div>
 </template>
 
