@@ -5,25 +5,25 @@
           <img class="header__logo__icon" src="@/assets/ranks/challenger.png" alt="">
           <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
         </div>
-                            <div class="header__time">
-                              <div class="header__time__text" v-if="!getTimeLeft()">LE CHALLENGE COMMENCE DANS</div>
-                              <div class="header__time__text" v-else>TEMPS RESTANT</div>
-                              <div class="header__time__timer">{{ timeLeft }}</div>
-                            </div>
-                            <div class="header__add" v-if="isAdmin">
-                              <input class="header__add__input" @keyup.enter="addPlayerToDB()" type="text" placeholder="Summoner name"
-                                v-model="nameToAdd">
-                              <div class="header__add__button" @click="addPlayerToDB()">Add</div>
-                            </div>
-                          </div>
-                          <div class="main">
-                            <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
-                              <div class="main__ranks__title" v-if="rank[1].length != 0">
-                                <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
-                                <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
-                              </div>
-                              <div class="main__ranks__players" v-if="rank[1].length != 0">
-                                <div class="main__ranks__players__player" v-for="player in rank[1]">
+            <div class="header__time">
+              <div class="header__time__text" v-if="!getTimeLeft()">LE CHALLENGE COMMENCE DANS</div>
+              <div class="header__time__text" v-else>TEMPS RESTANT</div>
+              <div class="header__time__timer">{{ timeLeft }}</div>
+            </div>
+            <div class="header__add" v-if="isAdmin">
+              <input class="header__add__input" @keyup.enter="addPlayerToDB()" type="text" placeholder="Summoner name"
+                v-model="nameToAdd">
+              <div class="header__add__button" @click="addPlayerToDB()">Add</div>
+            </div>
+          </div>
+          <div class="main">
+            <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
+              <div class="main__ranks__title" v-if="rank[1].length != 0">
+                <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
+                <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
+              </div>
+              <div class="main__ranks__players" v-if="rank[1].length != 0">
+                <div class="main__ranks__players__player" v-for="player in rank[1]">
                 <div v-if="isAdmin" class="player__delete" @click="deletePlayerFromDB(player.name)"><svg
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#F85252"
                     height="800px" width="800px" version="1.1" id="Capa_1" viewBox="0 0 460.775 460.775" xml:space="preserve">
@@ -190,7 +190,7 @@ export default {
 
 
 
-      this.timeLeft = `${dayLeft} Jours ${hourLeft} heures ${minuteLeft} minutes ${secondLeft} secondes`;
+      this.timeLeft = `${dayLeft > 0 ? dayLeft + " Jours" : ""} ${hourLeft > 0 ? hourLeft + " Heures" : ""} ${minuteLeft > 0 ? minuteLeft + " Minutes" : ""} ${secondLeft > 0 ? secondLeft + " Secondes" : ""}`;
       return !monthLeft
     }
   },
@@ -292,9 +292,9 @@ export default {
       align-items: center;
       justify-content: center;
       gap: 0.2em;
-      
+
       &__text {
-        font-size: 30px;
+        font-size: 20px;
         color: #fff;
       }
 
