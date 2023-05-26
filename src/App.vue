@@ -5,104 +5,104 @@
           <img class="header__logo__icon" src="@/assets/ranks/challenger.png" alt="">
           <h1 class="header__logo__title">OnlyEgoChallenge Leaderboard</h1>
         </div>
-            <div class="header__time">
-              <div class="header__time__text" v-if="!getTimeLeft()">LE CHALLENGE COMMENCE DANS</div>
-                    <div class="header__time__text" v-else>TEMPS RESTANT (Nombre de joueurs : {{ getNumberOfPlayers() }})</div>
-              <div class="header__time__timer">{{ timeLeft }}</div>
-            </div>
-            <div class="header__add" v-if="isAdmin">
-              <input class="header__add__input" @keyup.enter="addPlayerToDB()" type="text" placeholder="Summoner name"
-                v-model="nameToAdd">
-              <div class="header__add__button" @click="addPlayerToDB()">Add</div>
-            </div>
+        <div class="header__time">
+          <div class="header__time__text" v-if="!getTimeLeft()">LE CHALLENGE COMMENCE DANS</div>
+          <div class="header__time__text" v-else>TEMPS RESTANT (Nombre de joueurs : {{ getNumberOfPlayers() }})</div>
+          <div class="header__time__timer">{{ timeLeft }}</div>
+        </div>
+        <div class="header__add" v-if="isAdmin">
+          <input class="header__add__input" @keyup.enter="addPlayerToDB()" type="text" placeholder="Summoner name"
+            v-model="nameToAdd">
+          <div class="header__add__button" @click="addPlayerToDB()">Add</div>
+        </div>
+      </div>
+      <div class="main">
+        <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
+          <div class="main__ranks__title" v-if="rank[1].length != 0">
+            <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
+            <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
           </div>
-          <div class="main">
-            <div v-for="rank in filteredRanks" :key="rank" class="main__ranks">
-              <div class="main__ranks__title" v-if="rank[1].length != 0">
-                <img class="main__ranks__title__icon" :src="getRankURL(rank[0].split(' ')[0].toLowerCase())">
-                <h2 class="main__ranks__title__text">{{ rank[0] }}</h2>
-              </div>
-              <div class="main__ranks__players" v-if="rank[1].length != 0">
-                <div class="main__ranks__players__player" v-for="player in rank[1]">
-                    <div v-if="isAdmin" class="player__delete" @click="deletePlayerFromDB(player.name)"><svg
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#F85252"
-                        height="800px" width="800px" version="1.1" id="Capa_1" viewBox="0 0 460.775 460.775" xml:space="preserve">
-                        <path
-                          d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z" />
-                      </svg></div>
-                    <div class="player__rank">
-                      <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
-                      <div class="player__rank__details">
-                        <div class="player__rank__details__stats">
-                          <div class="stats">
-                                <div class="stats__name" @click="openOpGG(player.name)">{{ player.name }} </div>
-                            <div class="stats__win">{{ player.ranked_info.wins }}W</div>
-                            <span> -</span>
-                            <div class="stats__lose">{{ player.ranked_info.losses }}L </div>
-                          </div>
-                            <div class="twitch" @click="openTwitch(player.twitch)" v-if="player.twitch.length > 0">
-                            <div class="twitch__logo"><svg width="256px" height="268px" viewBox="0 0 256 268" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                preserveAspectRatio="xMidYMid">
-                                <g>
-                                  <path
-                                    d="M17.4579119,0 L0,46.5559188 L0,232.757287 L63.9826001,232.757287 L63.9826001,267.690956 L98.9144853,267.690956 L133.811571,232.757287 L186.171922,232.757287 L256,162.954193 L256,0 L17.4579119,0 Z M40.7166868,23.2632364 L232.73141,23.2632364 L232.73141,151.29179 L191.992415,192.033461 L128,192.033461 L93.11273,226.918947 L93.11273,192.033461 L40.7166868,192.033461 L40.7166868,23.2632364 Z M104.724985,139.668381 L127.999822,139.668381 L127.999822,69.843872 L104.724985,69.843872 L104.724985,139.668381 Z M168.721862,139.668381 L191.992237,139.668381 L191.992237,69.843872 L168.721862,69.843872 L168.721862,139.668381 Z"
-                                    fill="#5A3E85"></path>
-                                </g>
-                              </svg></div>
-                            <div class="twitch__link">{{ player.twitch }}</div>
-                          </div>
-                        </div>
-                        <div class="player__rank__details__elobar"
-                          :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
-
-                            player.ranked_info.tier == 'unranked' ? 'Unranked' :
-                            player.ranked_info.lp + 'LP' }}</div>
-                      </div>
+          <div class="main__ranks__players" v-if="rank[1].length != 0">
+            <div class="main__ranks__players__player" v-for="player in rank[1]">
+              <div v-if="isAdmin" class="player__delete" @click="deletePlayerFromDB(player.name)"><svg
+                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#F85252"
+                  height="800px" width="800px" version="1.1" id="Capa_1" viewBox="0 0 460.775 460.775" xml:space="preserve">
+                  <path
+                    d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z" />
+                </svg></div>
+              <div class="player__rank">
+                <img class="player__rank__avatar" :src="getAvatarURL(player.avatarId)" alt="">
+                <div class="player__rank__details">
+                  <div class="player__rank__details__stats">
+                    <div class="stats">
+                      <div class="stats__name" @click="openOpGG(player.name)">{{ player.name }} </div>
+                      <div class="stats__win">{{ player.ranked_info.wins }}W</div>
+                      <span> -</span>
+                      <div class="stats__lose">{{ player.ranked_info.losses }}L </div>
                     </div>
-                    <div class="player__lastgame" v-if="player.last_match.game_duration != 0">
-                      <div class="player__lastgame__header">
-                        <p class="player__lastgame__header__title">Last Ranked :</p>
-                        <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
-                      </div>
-                      <div class="player__lastgame__score">
-                        <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
-                        <div class="player__lastgame__score__lose" v-else>Defeat</div>
-                        <div class="player__lastgame__score__champ">
-                          <img class="player__lastgame__score__champ__icon"
-                            :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
-                          <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
-                        </div>
-                        <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
-                          player.last_match.game_kills
-                        }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
+                    <div class="twitch" @click="openTwitch(player.twitch)" v-if="player.twitch.length > 0">
+                      <div class="twitch__logo"><svg width="256px" height="268px" viewBox="0 0 256 268" version="1.1"
+                          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                          preserveAspectRatio="xMidYMid">
+                          <g>
+                            <path
+                              d="M17.4579119,0 L0,46.5559188 L0,232.757287 L63.9826001,232.757287 L63.9826001,267.690956 L98.9144853,267.690956 L133.811571,232.757287 L186.171922,232.757287 L256,162.954193 L256,0 L17.4579119,0 Z M40.7166868,23.2632364 L232.73141,23.2632364 L232.73141,151.29179 L191.992415,192.033461 L128,192.033461 L93.11273,226.918947 L93.11273,192.033461 L40.7166868,192.033461 L40.7166868,23.2632364 Z M104.724985,139.668381 L127.999822,139.668381 L127.999822,69.843872 L104.724985,69.843872 L104.724985,139.668381 Z M168.721862,139.668381 L191.992237,139.668381 L191.992237,69.843872 L168.721862,69.843872 L168.721862,139.668381 Z"
+                              fill="#5A3E85"></path>
+                          </g>
+                        </svg></div>
+                      <div class="twitch__link">{{ player.twitch }}</div>
+                    </div>
+                  </div>
+                  <div class="player__rank__details__elobar"
+                    :style="{ background: createBackgroundString(player.ranked_info.tier, player.ranked_info.lp) }">{{
+
+                      player.ranked_info.tier == 'unranked' ? 'Unranked' :
+                      player.ranked_info.lp + 'LP' }}</div>
+                </div>
+              </div>
+              <div class="player__lastgame" v-if="player.last_match.game_duration != 0">
+                <div class="player__lastgame__header">
+                  <p class="player__lastgame__header__title">Last Ranked :</p>
+                  <p class="player__lastgame__header__date">{{ dateFormat(player.last_match.game_creation) }}</p>
+                </div>
+                <div class="player__lastgame__score">
+                  <div class="player__lastgame__score__win" v-if="player.last_match.win">Victory</div>
+                  <div class="player__lastgame__score__lose" v-else>Defeat</div>
+                  <div class="player__lastgame__score__champ">
+                    <img class="player__lastgame__score__champ__icon"
+                      :src="getChampIconUrl(player.last_match.game_champion.toLowerCase())">
+                    <p class="player__lastgame__score__champ__name">{{ player.last_match.game_champion }}</p>
+                  </div>
+                  <div class="player__lastgame__score__kda"><span class="player__lastgame__score__kda__kills">{{
+                    player.last_match.game_kills
+                  }}</span>/<span class="player__lastgame__score__kda__deaths">{{ player.last_match.game_deaths
 }}</span>/<span class="player__lastgame__score__kda__assists">{{ player.last_match.game_assists
 }}</span></div>
-                      </div>
-                      <div class="player__lastgame__details">
-                        <div class="player__lastgame__details__lane">
-                          <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
-                          <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
-                        </div>
-                        <div class="player__lastgame__details__minions">
-                          <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
-                          <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
-                        </div>
-                        <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="player__lastgame" v-else>
-                      <div class="player__lastgame__header">
-                        <p class="player__lastgame__header__title">Last Ranked :</p>
-                        <p class="player__lastgame__header__date">No ranked games</p>
-                      </div>
-                    </div>
+                </div>
+                <div class="player__lastgame__details">
+                  <div class="player__lastgame__details__lane">
+                    <img class="player__lastgame__details__lane__icon" :src="getLaneURL(player.last_match.role)">
+                    <p class="player__lastgame__details__lane__text">{{ player.last_match.role.toLowerCase() }}</p>
+                  </div>
+                  <div class="player__lastgame__details__minions">
+                    <img class="player__lastgame__details__minions__icon" src="@/assets/lanes/minions.png">
+                    <p class="player__lastgame__details__minions__text">{{ player.last_match.minions_killed }}</p>
+                  </div>
+                  <div class="player__lastgame__details__gametime">{{ secondsToMinutes(player.last_match.game_duration) }}
                   </div>
                 </div>
               </div>
+              <div class="player__lastgame" v-else>
+                <div class="player__lastgame__header">
+                  <p class="player__lastgame__header__title">Last Ranked :</p>
+                  <p class="player__lastgame__header__date">No ranked games</p>
+                </div>
+              </div>
             </div>
-        <div class="credits">Made by <a href="https://github.com/TheCreeep" target="_blank">Creep</a> - 2023</div>
+          </div>
+        </div>
+      </div>
+      <div class="credits">Made by <a href="https://github.com/TheCreeep" target="_blank">Creep</a> - 2023</div>
     </div>
 </template>
 
@@ -202,8 +202,6 @@ export default {
       const minuteLeft = duree.minutes();
       const secondLeft = duree.seconds()
 
-
-
       this.timeLeft = `${dayLeft > 0 ? dayLeft + " Jours" : ""} ${hourLeft > 0 ? hourLeft + " Heures" : ""} ${minuteLeft > 0 ? minuteLeft + " Minutes" : ""} ${secondLeft > 0 ? secondLeft + " Secondes" : ""}`;
       return !monthLeft
     },
@@ -217,7 +215,6 @@ export default {
       window.open(`https://euw.op.gg/summoner/userName=${name}`, '_blank');
     },
     getNumberOfPlayers() {
-      /* Count the number of all players in all of ranks */
       return Object.values(this.data).reduce((acc, cur) => {
         if (Array.isArray(cur)) {
           return acc + cur.length;
@@ -491,7 +488,7 @@ export default {
                   border-radius: 25px;
                   background: #FFFFFF40;
                   padding: 0.5em;
-                  cursor:pointer;
+                  cursor: pointer;
 
                   &__logo {
                     svg {

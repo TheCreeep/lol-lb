@@ -60,6 +60,7 @@ const store = new Vuex.Store({
         game_assists: 0,
         win: false,
         role: '',
+        lane: '',
         minions_killed: 0
       }
     }
@@ -327,7 +328,7 @@ const store = new Vuex.Store({
               playerStats.individualPosition == 'UTILITY'
                 ? 'SUPPORT'
                 : playerStats.individualPosition
-            this.state.player.last_match.minions_killed = playerStats.totalMinionsKilled
+            this.state.player.last_match.minions_killed = playerStats.totalMinionsKilled + playerStats.neutralMinionsKilled
           })
           .catch((err) => {
             console.log(err)
