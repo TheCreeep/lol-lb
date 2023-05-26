@@ -146,7 +146,7 @@ export default {
       return dayjs(timestamp).format('DD MMMM YYYY HH:mm:ss')
     },
     secondsToMinutes(seconds) {
-      return `${Math.floor(seconds / 60)}:${seconds % 60}`
+      return `${Math.floor(seconds / 60)}:${seconds % 60 < 10 ? '0' + seconds % 60 : seconds % 60}`
     },
     createBackgroundString(tier, lp) {
       if (tier === 'unranked') {
