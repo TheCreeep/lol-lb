@@ -93,7 +93,7 @@ export default {
         "bronze": "#5A3E39",
         "iron": "#554542",
       },
-      players: ["Agent C", "EinfachSebb", "SNUSGabe",]
+      players: ["Agent C"]
     }
   },
   mounted() {
@@ -173,20 +173,15 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  background: red;
-  margin-right: 10px;
-
+  width: 15px;
+  background: #424242;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(90, 90, 90);
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  margin-right: 10px;
+  background: #252525;
+  border-radius: 10px;
+  background-clip: padding-box;
 }
 
 .page {

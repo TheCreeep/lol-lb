@@ -32,7 +32,8 @@ const store = new Vuex.Store({
       'Iron I': [],
       'Iron II': [],
       'Iron III': [],
-      'Iron IV': []
+      'Iron IV': [],
+      'Unranked': []
     },
     player: {
       name: '',
@@ -62,6 +63,8 @@ const store = new Vuex.Store({
     /*  */
   },
   actions: {
+    /* Store player name to firebase database */
+    
     async addPlayerToData({ dispatch }) {
       this.state.data[this.state.player.ranked_info.rank].push(this.state.player)
     },
@@ -122,7 +125,13 @@ const store = new Vuex.Store({
             return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
           }
 
-          this.state.player.ranked_info.rank = capitalize(data.tier) + ' ' + data.rank
+          /* if challenger Grandmaster or master only send capitalize(data.tier) */
+
+          if (data.tier === 'CHALLENGER' || data.tier === 'GRANDMASTER' || data.tier === 'MASTER') {
+            this.state.player.ranked_info.rank = capitalize(data.tier)
+          } else {
+            this.state.player.ranked_info.rank = capitalize(data.tier) + ' ' + data.rank
+          }
 
           this.state.player.ranked_info.tier = data.tier.toLowerCase()
         })
@@ -164,9 +173,6 @@ const store = new Vuex.Store({
           this.state.player.last_match.role =
             playerStats.individualPosition == 'UTILITY' ? 'SUPPORT' : playerStats.individualPosition
           this.state.player.last_match.minions_killed = playerStats.totalMinionsKilled
-        })
-        .then(() => {
-          this.state.data[this.state.player.ranked_info.rank].push(this.state.player)
         })
         .catch((err) => {
           console.log(err)
