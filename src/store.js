@@ -41,6 +41,7 @@ const store = new Vuex.Store({
     },
     player: {
       name: '',
+      twitch: '',
       avatarId: 0,
       puuid: '',
       id: '',
@@ -66,22 +67,22 @@ const store = new Vuex.Store({
   mutations: {},
   actions: {
     async deletePlayerFromDB({ dispatch }, data) {
-      const { name , key} = data
+      const { name, key } = data
 
       const namesCol = collection(db, 'players')
       const namesSnapshot = await getDocs(namesCol)
       const namesList = namesSnapshot.docs.map((doc) => doc.data())
 
-      const players = namesList[0].names
+      const playersList = namesList[0].profile
 
-      const index = players.indexOf(name)
+      const nameToDelete = playersList.find((player) => player.name === name).name
 
-      if (index > -1) {
-        players.splice(index, 1)
-      }
+      const index = playersList.findIndex((player) => player.name === nameToDelete)
 
-      await setDoc(doc(db, 'players', 'names'), {
-        names: players
+      playersList.splice(index, 1)
+      
+      await setDoc(doc(db, 'players', 'profile'), {
+        profile: playersList
       })
 
       toast.success('Player ' + name + ' deleted from the Leaderboard!', {
@@ -104,9 +105,9 @@ const store = new Vuex.Store({
           const namesSnapshot = await getDocs(namesCol)
           const namesList = namesSnapshot.docs.map((doc) => doc.data())
 
-          const players = namesList[0].names
+          const playersList = namesList[0].profile
 
-          if (players.includes(res.data.name)) {
+          if (playersList.includes(res.data.name)) {
             toast.error('Player ' + name + ' already exists!', {
               position: 'bottom-right',
               theme: 'dark'
@@ -114,10 +115,10 @@ const store = new Vuex.Store({
             return false
           }
 
-          players.push(res.data.name)
+          playersList.push({ name: res.data.name, twitch: '' })
 
-          await setDoc(doc(db, 'players', 'names'), {
-            names: players
+          await setDoc(doc(db, 'players', 'profile'), {
+            profile: playersList
           })
 
           toast.success('Player ' + name + ' added to the Leaderboard!', {
@@ -133,29 +134,6 @@ const store = new Vuex.Store({
             theme: 'dark'
           })
           console.log(err)
-        })
-    },
-    async addPlayerToDb(_, data) {
-      const { name, key: RGAPIKEY } = data
-
-      await axios
-        .get(
-          `https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${name}?api_key=${RGAPIKEY}`
-        )
-        .then(async (res) => {
-          const namesCol = collection(db, 'players')
-          const namesSnapshot = await getDocs(namesCol)
-          const namesList = namesSnapshot.docs.map((doc) => doc.data())
-
-          const players = namesList[0].names
-
-          if (!players.includes(res.data.name)) {
-            players.push(res.data.name)
-          }
-
-          await db.collection('players').doc('names').set({
-            names: players
-          })
         })
     },
     async getNames({ dispatch }, data) {
@@ -196,10 +174,10 @@ const store = new Vuex.Store({
       const namesSnapshot = await getDocs(namesCol)
       const namesList = namesSnapshot.docs.map((doc) => doc.data())
 
-      const players = namesList[0].names
+      const playersList = namesList[0].profile
 
       await dispatch('getAllPlayersInfo', {
-        players: players,
+        players: playersList,
         key: key
       })
     },
@@ -219,8 +197,10 @@ const store = new Vuex.Store({
       for (const player of players) {
         if (!this.state.player_loading) {
           this.state.player = {}
+          const { name, twitch } = player
+          this.state.player.twitch = twitch
           this.state.player_loading = true
-          await dispatch('getPlayerInfo', { name: player, key: RGAPIKEY })
+          await dispatch('getPlayerInfo', { name, key: RGAPIKEY })
           await dispatch('addPlayerToData')
           this.state.player_loading = false
         }
