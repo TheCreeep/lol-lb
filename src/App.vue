@@ -35,7 +35,7 @@
                       <div class="player__rank__details">
                         <div class="player__rank__details__stats">
                           <div class="stats">
-                            <div class="stats__name">{{ player.name }} </div>
+                                <div class="stats__name" @click="openOpGG(player.name)">{{ player.name }} </div>
                             <div class="stats__win">{{ player.ranked_info.wins }}W</div>
                             <span> -</span>
                             <div class="stats__lose">{{ player.ranked_info.losses }}L </div>
@@ -212,6 +212,9 @@ export default {
     },
     openTwitch(name) {
       window.open(this.getTwitchUrl(name), '_blank');
+    },
+    openOpGG(name) {
+      window.open(`https://euw.op.gg/summoner/userName=${name}`, '_blank');
     },
   },
   watch: {
@@ -446,6 +449,7 @@ export default {
                     font-size: 30px;
                     font-weight: 400;
                     color: #FFFFFF;
+                    cursor: pointer;
                   }
 
                   &__win {
