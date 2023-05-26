@@ -114,12 +114,10 @@ export default {
       return `https://cdn.mobalytics.gg/assets/lol/images/dd/champions/icons/${name.toLowerCase()}.png?V3`;
     },
     getRankURL(rank) {
-      const path = new URL(`assets/ranks/`, import.meta.url)
-      return `${path}/${rank}.png`
+      return `assets/ranks/${rank}.png`
     },
     getLaneURL(lane) {
-      const path = new URL(`assets/lanes/`, import.meta.url)
-      return `${path}/${lane.toLowerCase()}.png`
+      return `assets/lanes/${lane.toLowerCase()}.png`
     },
     dateFormat(timestamp) {
       return dayjs(timestamp).format('DD MMMM YYYY HH:mm:ss')
