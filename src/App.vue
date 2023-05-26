@@ -140,7 +140,7 @@ export default {
     }
     ,
     getAvatarURL(id) {
-      return `https://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${id}.png`;
+      return `https://ddragon.leagueoflegends.com/cdn/13.10.1/img/profileicon/${id}.png`;
     },
     getChampIconUrl(name) {
       return `https://cdn.mobalytics.gg/assets/lol/images/dd/champions/icons/${name.toLowerCase()}.png?V3`;
